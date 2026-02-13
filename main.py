@@ -28,6 +28,7 @@ def show_menu() -> None:
     print("2. Показати задачі")
     print("3. Вийти")
     print("4. Очистити список")
+    print("5. Видалити задачу")
 
 
 def add_task(tasks: list[str]) -> None:
@@ -46,6 +47,29 @@ def list_tasks(tasks: list[str]) -> None:
         return
     for i, t in enumerate(tasks, start=1):
         print(f"{i}. {t}")
+
+
+def delete_task(tasks: list[str]) -> None:
+    if not tasks:
+        print("Немає задач для видалення.")
+        return
+
+    list_tasks(tasks)
+    raw = input("Введи номер задачі для видалення: ").strip()
+
+    if not raw.isdigit():
+        print("Треба ввести число.")
+        return
+
+    idx = int(raw) - 1  # бо людям зручно з 1, а в списку індекси з 0
+
+    if idx < 0 or idx >= len(tasks):
+        print("Немає задачі з таким номером.")
+        return
+
+    removed = tasks.pop(idx)
+    save_tasks(tasks)
+    print(f"Видалено: {removed}")
 
 
 def clear_tasks(tasks: list[str]) -> None:
@@ -70,6 +94,8 @@ def main() -> None:
             break
         elif choice == "4":
             clear_tasks(tasks)
+        elif choice == "5":
+            delete_task(tasks)
         else:
             print("Невірний вибір")
 
