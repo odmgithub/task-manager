@@ -1,20 +1,20 @@
 [
   {
     "id": 1,
-    "text": "Купити телефон",
+    "text": "Купити Iphone",
     "done": false,
     "created_at": "2026-02-20T18:27:22"
   },
   {
     "id": 2,
     "text": "Вивчити пітон",
-    "done": true,
+    "done": false,
     "created_at": "2026-02-20T18:27:22"
   },
   {
     "id": 3,
     "text": "Піти спати",
-    "done": false,
+    "done": true,
     "created_at": "2026-02-20T18:27:22"
   },
   {
@@ -22,5 +22,17 @@
     "text": "Погладити кота",
     "done": true,
     "created_at": "2026-02-20T18:37:00"
+  },
+  {
+    "id": 5,
+    "text": "Попити водички",
+    "done": true,
+    "created_at": "2026-02-20T22:41:42"
+  },
+  {
+    "id": 7,
+    "text": "Порахувати гроші",
+    "done": false,
+    "created_at": "2026-02-20T23:18:45"
   }
 ]
