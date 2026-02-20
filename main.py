@@ -29,6 +29,7 @@ def show_menu() -> None:
     print("3. Вийти")
     print("4. Очистити список")
     print("5. Видалити задачу")
+    print("6. Позначити як виконану")
 
 
 def add_task(tasks: list[str]) -> None:
@@ -96,8 +97,34 @@ def main() -> None:
             clear_tasks(tasks)
         elif choice == "5":
             delete_task(tasks)
+        elif choice == "6":
+            complete_task(tasks)
         else:
             print("Невірний вибір")
+
+
+def complete_task(tasks: list[str]) -> None:
+    if not tasks:
+        print("Немає задач.")
+        return
+
+    list_tasks(tasks)
+
+    raw = input("Введи номер виконаної задачі: ").strip()
+
+    if not raw.isdigit():
+        print("Треба число.")
+        return
+
+    idx = int(raw) - 1
+
+    if idx < 0 or idx >= len(tasks):
+        print("Невірний номер.")
+        return
+
+    tasks[idx] = "[✓] " + tasks[idx]
+    save_tasks(tasks)
+    print("Позначено як виконану!")
 
 
 if __name__ == "__main__":
