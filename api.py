@@ -1,14 +1,10 @@
-from fastapi import FastAPI, HTTPException
+# api.py
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import HTMLResponse, Response
 
-from models import TaskCreate, TaskUpdate, TasksResponse, Task
-from services import (
-    get_tasks_service,
-    add_task_service,
-    toggle_task_service,
-    update_task_service,
-    delete_task_service,
-)
+from models import TaskCreate, TaskUpdate, TasksResponse
+from deps import get_tasks_service
+from services import TasksService
 from ui import get_ui_html
 
 app = FastAPI()
@@ -24,36 +20,33 @@ def ui():
     return get_ui_html()
 
 
-from models import TasksResponse, Task   # ← якщо ще немає імпорту
-
 @app.get("/tasks", response_model=TasksResponse)
-def get_tasks():
-    tasks = get_tasks_service()
-    return {"tasks": tasks}
+def get_tasks(svc: TasksService = Depends(get_tasks_service)):
+    return {"tasks": svc.list_tasks()}
 
 
 @app.post("/tasks", response_model=dict)
-def add_task(payload: TaskCreate):
+def add_task(payload: TaskCreate, svc: TasksService = Depends(get_tasks_service)):
     try:
-        t = add_task_service(payload.text)
+        t = svc.add_task(payload.text)
         return {"task": t}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.post("/tasks/{task_id}/toggle", response_model=dict)
-def toggle_task(task_id: int):
+def toggle_task(task_id: int, svc: TasksService = Depends(get_tasks_service)):
     try:
-        t = toggle_task_service(task_id)
+        t = svc.toggle_task(task_id)
         return {"task": t}
     except KeyError:
         raise HTTPException(status_code=404, detail="Task not found")
 
 
 @app.patch("/tasks/{task_id}", response_model=dict)
-def update_task(task_id: int, payload: TaskUpdate):
+def update_task(task_id: int, payload: TaskUpdate, svc: TasksService = Depends(get_tasks_service)):
     try:
-        t = update_task_service(task_id, payload.text)
+        t = svc.update_task(task_id, payload.text)
         return {"task": t}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -62,9 +55,9 @@ def update_task(task_id: int, payload: TaskUpdate):
 
 
 @app.delete("/tasks/{task_id}", response_model=dict)
-def delete_task(task_id: int):
+def delete_task(task_id: int, svc: TasksService = Depends(get_tasks_service)):
     try:
-        delete_task_service(task_id)
+        svc.delete_task(task_id)
         return {"ok": True}
     except KeyError:
         raise HTTPException(status_code=404, detail="Task not found")

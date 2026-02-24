@@ -1,10 +1,8 @@
-from services import (
-    get_tasks_service as list_tasks,
-    add_task_service as add_task,
-    toggle_task_service as toggle_task,
-    update_task_service as update_task,
-    delete_task_service as delete_task,
-)
+# cli.py
+from config import settings
+from storage import JsonTasksRepo
+from services import TasksService
+
 
 def show(tasks):
     if not tasks:
@@ -16,33 +14,35 @@ def show(tasks):
 
 
 def main():
+    svc = TasksService(JsonTasksRepo(settings.tasks_path))
+
     while True:
         print("\n1) list  2) add  3) toggle  4) edit  5) delete  0) exit")
         choice = input("> ").strip()
 
         try:
             if choice == "1":
-                show(list_tasks())
+                show(svc.list_tasks())
 
             elif choice == "2":
                 text = input("Text: ")
-                t = add_task(text)
+                t = svc.add_task(text)
                 print(f"Added: #{t.id}")
 
             elif choice == "3":
                 task_id = int(input("ID: "))
-                t = toggle_task(task_id)
+                t = svc.toggle_task(task_id)
                 print(f"Toggled: #{t.id} -> done={t.done}")
 
             elif choice == "4":
                 task_id = int(input("ID: "))
                 text = input("New text: ")
-                t = update_task(task_id, text)
+                t = svc.update_task(task_id, text)
                 print(f"Updated: #{t.id}")
 
             elif choice == "5":
                 task_id = int(input("ID: "))
-                delete_task(task_id)
+                svc.delete_task(task_id)
                 print("Deleted.")
 
             elif choice == "0":
