@@ -2,18 +2,33 @@
 from config import settings
 from storage import JsonTasksRepo
 from services import TasksService
+from exceptions import TaskNotFound, TaskTextEmpty
 
 
 def show(tasks):
+    """
+    Виводить список задач у термінал.
+
+    Тут "presentation layer" для CLI:
+    лише форматування і друк, без бізнес-логіки.
+    """
     if not tasks:
         print("Немає задач.")
         return
+
     for t in tasks:
         mark = "✓" if t.done else " "
         print(f"{t.id:>3} [{mark}] {t.text}  ({t.created_at})")
 
 
 def main():
+    """
+    Точка входу для CLI.
+
+    Важлива ідея:
+    CLI створює сервіс вручну (без FastAPI),
+    але використовує ТІ Ж методи, що і API.
+    """
     svc = TasksService(JsonTasksRepo(settings.tasks_path))
 
     while True:
@@ -51,6 +66,10 @@ def main():
             else:
                 print("Невідомий вибір.")
 
+        except TaskTextEmpty:
+            print("❗ Текст задачі не може бути порожнім.")
+        except TaskNotFound as e:
+            print(f"❗ {e}")
         except Exception as e:
             print("Error:", e)
 

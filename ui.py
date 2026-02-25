@@ -1,3 +1,18 @@
+"""
+    Повертає HTML-сторінку UI як рядок.
+
+    Ідея цього підходу:
+    - без шаблонізаторів (Jinja)
+    - без React/Vue
+    - одна сторінка, яка працює через fetch() до API
+
+    UI спілкується з бекендом через:
+    - GET    /tasks
+    - POST   /tasks
+    - POST   /tasks/{id}/toggle
+    - PATCH  /tasks/{id}
+    - DELETE /tasks/{id}
+    """
 def get_ui_html() -> str:
     return """
 <!doctype html>
